@@ -1,0 +1,15 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    @apply text-gray-800 h-full;
+}
+
+body,
+#app {
+    @apply h-full min-h-full;
+}
