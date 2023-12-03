@@ -46,7 +46,7 @@ function addParticle() {
 </script>
 
 <template>
-    <svg class="select-none cursor-pointer inline" @click="hit()" viewBox="0 0 185 275" height="500">
+    <svg class="select-none cursor-pointer inline" @mousedown="hit()" viewBox="0 0 185 275" height="500">
         <g transform="translate(-100 -40)">
             <g transform="translate(195 183)">
                 <g ref="particleGroup" transform="translate(3 0)"></g>
