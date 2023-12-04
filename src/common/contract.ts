@@ -1,15 +1,21 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 
-export const contract = initContract().router({
-    greet: {
-        method: "GET",
-        path: "/api/greeting/:name",
-        pathParams: z.object({
-            name: z.string()
-        }),
-        responses: {
-            200: z.string()
+export const contract = initContract().router(
+    {
+        input: {
+            method: "GET",
+            path: "/events/:event/puzzles/:puzzle/input",
+            pathParams: z.object({
+                event: z.string(),
+                puzzle: z.string()
+            }),
+            responses: {
+                200: z.undefined()
+            }
         }
+    },
+    {
+        strictStatusCodes: true
     }
-});
+);

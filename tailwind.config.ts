@@ -7,7 +7,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ["'Inter Variable'", ...defaultTheme.fontFamily.sans],
-                mono: ["'JetBrains Mono Variable'", ...defaultTheme.fontFamily.mono]
+                mono: ["'Ubuntu mono'", ...defaultTheme.fontFamily.mono]
             }
         }
     }

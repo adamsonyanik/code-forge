@@ -13,3 +13,27 @@ body,
 #app {
     @apply h-full min-h-full;
 }
+
+p, pre:has(code) {
+    @apply my-4;
+}
+
+main {
+    @apply max-w-[45rem] mx-auto flex flex-col py-8;
+}
+
+main h1 {
+    @apply text-4xl;
+}
+
+code {
+    @apply font-mono bg-[#1e293b] border rounded text-[#f8fafc] inline-block leading-5 px-0.5;
+}
+
+em, a {
+    @apply p-0 leading-5 font-mono not-italic text-lg font-bold;
+}
+
+a {
+    @apply text-green-500 hover:text-green-300;
+}
