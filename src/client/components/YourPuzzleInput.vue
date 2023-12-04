@@ -5,5 +5,5 @@ const path = useRoute().fullPath;
 </script>
 
 <template>
-    <a :href="path + (path.endsWith('/') ? '' : '/') + 'input'" target="_blank">your puzzle input</a>
+    <a :href="'/api' + path + (path.endsWith('/') ? '' : '/') + 'input'" target="_blank">your puzzle input</a>
 </template>
