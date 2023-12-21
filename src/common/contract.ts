@@ -6,9 +6,9 @@ export const contract = initContract().router(
     {
         input: {
             method: "GET",
-            path: "/api/events/:event/puzzles/:puzzle/input",
+            path: "/api/adventures/:adventure/puzzles/:puzzle/input",
             pathParams: z.object({
-                event: z.string(),
+                adventure: z.string(),
                 puzzle: z.string()
             }),
             responses: {

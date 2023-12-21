@@ -6,7 +6,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["'Inter Variable'", ...defaultTheme.fontFamily.sans],
+                sans: ["'Bookman Old Style'", ...defaultTheme.fontFamily.serif],
                 mono: ["'Ubuntu mono'", ...defaultTheme.fontFamily.mono]
             }
         }

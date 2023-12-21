@@ -10,8 +10,8 @@ import AnvilComponent from "../components/anvil/AnvilComponent.vue";
         </div>
 
         <div class="flex items-baseline gap-5">
-            <h2 class="text-xl lg:text-4xl">Current Event:</h2>
-            <router-link class="text-2xl lg:text-5xl" to="/events/generic-puzzles">Generic Puzzles</router-link>
+            <h2 class="text-xl lg:text-4xl">Current Adventure:</h2>
+            <router-link class="text-2xl lg:text-5xl" to="/adventures/generic-puzzles">Generic Puzzles</router-link>
         </div>
     </div>
 </template>
