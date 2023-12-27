@@ -11,7 +11,8 @@ body,
     @apply h-full min-h-full;
 }
 
-p, pre:has(code) {
+p,
+pre:has(code) {
     @apply my-4;
 }
 
@@ -27,7 +28,8 @@ code {
     @apply font-mono bg-[#1e293b] border rounded text-[#f8fafc] inline-block leading-5 px-0.5;
 }
 
-em, a {
+em,
+a {
     @apply p-0 leading-5 not-italic text-lg font-bold;
 }
 

@@ -5,7 +5,7 @@
     "author": "Yanik Adamson",
     "type": "commonjs",
     "scripts": {
-        "dev": "tsx watch --ignore 'vite.config.ts.timestamp-*.mjs' --ignore 'src/client/**/*' src/main.dev.ts",
+        "dev": "tsx watch --ignore 'vite.config.*.*.*' --ignore 'src/client/**/*' src/main.dev.ts",
         "lint": "eslint --ext .vue,.ts --ignore-path .gitignore . && prettier --ignore-path .gitignore --check .",
         "test:e2e": "cypress run --browser chrome",
         "check": "vue-tsc --noEmit",
@@ -17,6 +17,7 @@
         "@ts-rest/express": "^3.30.5",
         "compression": "^1.7.4",
         "express": "^4.18.2",
+        "seedrandom": "^3.0.5",
         "vue": "^3.3.4",
         "vue-router": "^4.2.5",
         "zod": "^3.22.4"
@@ -30,6 +31,7 @@
         "@types/compression": "^1.7.5",
         "@types/express": "^4.17.21",
         "@types/node": "^20.9.3",
+        "@types/seedrandom": "^3.0.8",
         "@types/swagger-ui-express": "^4.1.6",
         "@vitejs/plugin-vue": "^4.5.0",
         "@vue/eslint-config-prettier": "^8.0.0",
@@ -47,6 +49,7 @@
         "typescript": "^5.3.2",
         "vite": "^5.0.2",
         "vite-express": "^0.11.1",
+        "vitest": "^1.1.0",
         "vue-tsc": "^1.8.22"
     }
 }
