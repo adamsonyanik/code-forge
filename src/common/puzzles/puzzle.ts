@@ -19,16 +19,12 @@ export abstract class Puzzle {
 
             describe("Part 1", () => {
                 for (const [i, puzzle] of generatedPuzzles.entries())
-                    test(String(i + 1), () =>
-                        expect(this.solvePart1(this.constructor.name + (i + 1))).toBe(puzzle.part1Solution)
-                    );
+                    test(String(i + 1), () => expect(this.solvePart1(puzzle.input)).toBe(puzzle.part1Solution));
             });
 
             describe("Part 2", () => {
                 for (const [i, puzzle] of generatedPuzzles.entries())
-                    test(String(i + 1), () =>
-                        expect(this.solvePart2(this.constructor.name + (i + 1))).toBe(puzzle.part2Solution)
-                    );
+                    test(String(i + 1), () => expect(this.solvePart2(puzzle.input)).toBe(puzzle.part2Solution));
             });
         });
     }

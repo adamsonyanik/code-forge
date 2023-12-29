@@ -66,7 +66,7 @@ test("generate sum and mul", () => {
         }
         return overlap;
     }
-    for (let index = 0; index < 100; index++) {
+    for (let index = 0; index < 5; index++) {
         fs.appendFileSync(__dirname + "/overlap.json", index + "\n");
         for (let i = 1; i < Puzzle_SerialNumber.maxFirstDigit; i++) {
             for (let j = 0; j < Puzzle_SerialNumber.maxLastDigit; j++) {
@@ -82,28 +82,75 @@ test("generate sum and mul", () => {
 });
 
 test("transform inputs", () => {
-    const input: { s: number[]; o: number[][] }[] = JSON.parse(readFileSync(__dirname + "/overlap.json", "utf-8"));
+    const input: { s: number[]; o: number[] }[] = JSON.parse(readFileSync(__dirname + "/overlap.json", "utf-8"));
 
-    const inputs = input.flat();
-    writeFileSync(__dirname + "/overlap2.json", JSON.stringify(inputs, null, 4));
+    const onlyOne1 = input.filter((v) => v.o[1] - v.s[1] < 2);
+    const inputs = Puzzle_SerialNumber.shuffle(
+        onlyOne1.map((v) => {
+            const n = v.s
+                .map((n, i) => n * i)
+                .reduce((a, b) => a + b)
+                .toString(16);
+            let s = "~0";
+            for (let i = 0; i < 16; i++) {
+                s += i
+                    .toString(16)
+                    .repeat(
+                        Math.min(v.s[i], v.o[i]) - (n[0] == i.toString(16) ? 1 : 0) - (n[1] == i.toString(16) ? 1 : 0)
+                    );
+            }
+
+            return n[0] + Puzzle_SerialNumber.shuffle(s.split("")).join("") + n[1];
+        })
+    ).map((l, i) => i + 1 + ": " + l);
+    writeFileSync(__dirname + "/input.txt", inputs.join("\n"));
 });
 
 // part one, one number is scratched off, should add all digits up to the product of first and last digit
+// 10e7
 // part two, zeros are treated as also scratched off, multiply all digits up to the exponent of first and last digit
-// 2891~4af
+// c162
 export class Puzzle_SerialNumber extends Puzzle {
     static maxFirstDigit = 15;
     static maxLastDigit = 13;
     generatePuzzle(rng: Random): PuzzleIO {
-        return { input: "", part1Solution: 0, part2Solution: 0 };
+        return { input: readFileSync(__dirname + "/input.txt", "utf-8"), part1Solution: 5127, part2Solution: 46969 };
     }
 
+    // add up all scratched digits
     solvePart1(input: string): number {
-        return 0;
+        const scratched = [];
+        for (let i of input.split("\n")) {
+            const serial = i.split(": ")[1];
+            const sum = parseInt(serial[0] + serial.at(-1)!, 16);
+            scratched.push(
+                sum -
+                    serial
+                        .split("")
+                        .filter((c) => c != "~")
+                        .map((n) => parseInt(n, 16))
+                        .reduce((a, b) => a + b)
+            );
+        }
+        return scratched.reduce((a, b) => a + b);
     }
 
+    // how many parts could contain a 3
     solvePart2(input: string): number {
-        return 0;
+        const scratched = [];
+        for (let i = 0; i < input.split("\n").length; i++) {
+            const line = input.split("\n")[i].split(": ")[1];
+            const exp = Math.pow(parseInt(line[0], 16), parseInt(line.at(-1)!, 16));
+            const rest =
+                exp /
+                line
+                    .split("")
+                    .filter((c) => c != "~" && c != "0")
+                    .map((n) => parseInt(n, 16))
+                    .reduce((a, b) => a * b, 1);
+            scratched.push((rest % 3 == 0 && rest < 0xf * 3) || line.includes("3") ? i + 1 : 0);
+        }
+        return scratched.reduce((a, b) => a + b);
     }
 
     static checkSerialNumberSum(serial: string) {
@@ -114,5 +161,13 @@ export class Puzzle_SerialNumber extends Puzzle {
     static checkSerialNumberMul(serial: string) {
         const digits = serial.split("").map((c) => parseInt(c, 16));
         return digits.reduce((a, b) => a * b, 1) == Math.pow(digits[0], digits.at(-1)!);
+    }
+
+    static shuffle<T>(a: T[]) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
     }
 }
