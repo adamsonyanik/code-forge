@@ -82,38 +82,9 @@ test("generate sum and mul", () => {
 });
 
 test("transform inputs", () => {
-    const input: { first: number; last: number; length: number; values: { s: number[]; o: number[][] }[] }[] =
-        JSON.parse(readFileSync(__dirname + "/overlap.json", "utf-8"));
+    const input: { s: number[]; o: number[][] }[] = JSON.parse(readFileSync(__dirname + "/overlap.json", "utf-8"));
 
-    /*
-    const inputs = input.map((e) => ({
-        first: e.first,
-        last: e.last,
-        length: e.length,
-        values: e.values.map((v) => {
-            return {
-                s: e.first.toString(16) + v.s.map((c, i) => i.toString(16).repeat(c)).join("") + e.last.toString(16),
-                o: v.o.map(
-                    (o) =>
-                        e.first.toString(16) + o.map((c, i) => i.toString(16).repeat(c)).join("") + e.last.toString(16)
-                )
-            };
-        })
-    }));*/
-    const inputs = input.map((e) =>
-        e.values.map((v) => {
-            const s = v.s;
-            s[e.first]++;
-            s[e.last]++;
-            const o = v.o.map((o) => {
-                const no = o;
-                no[e.first]++;
-                no[e.last]++;
-                return no;
-            });
-            return { s, o };
-        })
-    );
+    const inputs = input.flat();
     writeFileSync(__dirname + "/overlap2.json", JSON.stringify(inputs, null, 4));
 });
 
