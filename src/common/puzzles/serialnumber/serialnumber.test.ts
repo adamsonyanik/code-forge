@@ -1,6 +1,9 @@
-import {Puzzle, PuzzleIO} from "../puzzle";
-import {Random} from "../random";
-import {describe, expect, test} from "vitest";
+import { Puzzle, PuzzleIO } from "../puzzle";
+import { Random } from "../random";
+import { describe, expect, test } from "vitest";
+import * as fs from "fs";
+import { readFileSync } from "fs";
+import { writeFileSync } from "node:fs";
 
 describe("Puzzle", () => new Puzzle_SerialNumber().test());
 
@@ -10,37 +13,108 @@ test("exponent smaller than max safe integer", () => {
             expect(Math.pow(i, j)).toBeLessThan(Number.MAX_SAFE_INTEGER);
 });
 
-test("small example", () => {
-    const sums = [];
-    const expos = [];
-    function addDigit(start: number, end: number, sum: number, digits: number[]){
-        if (digits.length < 9){
-            for (let i = digits.length > 2 ? digits.at(-1)! : 1; i < 16; i++) addDigit(start, end, sum, [...digits, i]);
-        } else {
-            const reduce = digits.reduce((a,b) => a+b);
-            if (reduce == sum) {
-                sums.push(digits.map(n => n.toString(16)).join(""));
+test("generate sum and mul", () => {
+    function getOverlapForLength(length: number, i: number, j: number) {
+        function addDigit(start: number, end: number, sum: number, digits: number[], array: number[][][]) {
+            const reduce = digits.reduce((a, b) => a + b);
+            if (reduce > sum) return;
+            if (digits.length < length) {
+                for (let i = digits.length > 2 ? digits.at(-1)! : 1; i < 0x10; i++)
+                    addDigit(start, end, sum, [...digits, i], array);
+            } else {
+                if (reduce == sum) {
+                    const c: number[] = new Array(16).fill(0);
+                    for (let i = 0; i < digits.length; i++) c[digits[i]]++;
+                    array[0].push(c);
+                }
             }
         }
-    }
-    function addDigitMul(start: number, end: number, exp: number, digits: number[]){
-        if (digits.length < 9){
-            for (let i = digits.length > 2 ? digits.at(-1)! : 1; i < 16; i++) addDigitMul(start, end, exp, [...digits, i]);
-        } else {
-            const reduce = digits.reduce((a,b) => a*b, 1);
-            if (reduce == exp) {
-                expos.push(digits.map(n => n.toString(16)).join(""));
-            }
-        }
-    }
-    for (let i = 0; i < 0xf; i++) {
-        for (let j = 0; j < 0xf; j++) {
-            //addDigit(i, j, i * 16 + j, [i,j]);
-            addDigitMul(i, j, Math.pow(i,j), [i,j]);
-        }
-    }
 
-    console.log(expos);
+        function addDigitMul(start: number, end: number, exp: number, digits: number[], array: number[][][]) {
+            const reduce = digits.reduce((a, b) => a * b, 1);
+            if (reduce > exp) return;
+            if (digits.length < length) {
+                for (let i = digits.length > 2 ? digits.at(-1)! : 1; i < 0x10; i++)
+                    addDigitMul(start, end, exp, [...digits, i], array);
+            } else {
+                if (reduce == exp) {
+                    const c: number[] = new Array(16).fill(0);
+                    for (let i = 0; i < digits.length; i++) c[digits[i]]++;
+                    array[1].push(c);
+                }
+            }
+        }
+
+        const overlap = [];
+        const array: number[][][] = [[], []];
+        addDigit(i, j, i * 0x10 + j, [i, j, 0], array);
+        addDigitMul(i, j, Math.pow(i, j), [i, j], array);
+
+        for (let x = 0; x < array[0].length; x++) {
+            const overlapExp = array[1].filter((o) => {
+                let overlap = 0;
+                for (let i = 0; i < array[0][x].length; i++) {
+                    overlap += Math.abs(array[0][x][i] - o[i]);
+                }
+                return overlap <= 4;
+            });
+            if (overlapExp.length > 0)
+                overlap.push({
+                    s: array[0][x].map((i) => i.toString(16)).join(""),
+                    o: overlapExp.map((n) => n.map((i) => i.toString(16)).join(""))
+                });
+        }
+        return overlap;
+    }
+    for (let index = 0; index < 100; index++) {
+        fs.appendFileSync(__dirname + "/overlap.json", index + "\n");
+        for (let i = 1; i < Puzzle_SerialNumber.maxFirstDigit; i++) {
+            for (let j = 0; j < Puzzle_SerialNumber.maxLastDigit; j++) {
+                const overlap = getOverlapForLength(index, i, j);
+                if (overlap.length > 0)
+                    fs.appendFileSync(
+                        __dirname + "/overlap.json",
+                        index + ", " + i + ", " + j + ": " + JSON.stringify(overlap, null, 4) + "\n"
+                    );
+            }
+        }
+    }
+});
+
+test("transform inputs", () => {
+    const input: { first: number; last: number; length: number; values: { s: number[]; o: number[][] }[] }[] =
+        JSON.parse(readFileSync(__dirname + "/overlap.json", "utf-8"));
+
+    /*
+    const inputs = input.map((e) => ({
+        first: e.first,
+        last: e.last,
+        length: e.length,
+        values: e.values.map((v) => {
+            return {
+                s: e.first.toString(16) + v.s.map((c, i) => i.toString(16).repeat(c)).join("") + e.last.toString(16),
+                o: v.o.map(
+                    (o) =>
+                        e.first.toString(16) + o.map((c, i) => i.toString(16).repeat(c)).join("") + e.last.toString(16)
+                )
+            };
+        })
+    }));*/
+    const inputs = input.map((e) =>
+        e.values.map((v) => {
+            const s = v.s;
+            s[e.first]++;
+            s[e.last]++;
+            const o = v.o.map((o) => {
+                const no = o;
+                no[e.first]++;
+                no[e.last]++;
+                return no;
+            });
+            return { s, o };
+        })
+    );
+    writeFileSync(__dirname + "/overlap2.json", JSON.stringify(inputs, null, 4));
 });
 
 // part one, one number is scratched off, should add all digits up to the product of first and last digit
