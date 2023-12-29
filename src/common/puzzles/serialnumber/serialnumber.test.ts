@@ -1,6 +1,6 @@
-import { Puzzle, PuzzleIO } from "../puzzle";
-import { Random } from "../random";
-import { describe, expect, test } from "vitest";
+import {Puzzle, PuzzleIO} from "../puzzle";
+import {Random} from "../random";
+import {describe, expect, test} from "vitest";
 
 describe("Puzzle", () => new Puzzle_SerialNumber().test());
 
@@ -11,24 +11,36 @@ test("exponent smaller than max safe integer", () => {
 });
 
 test("small example", () => {
-    const min = 0x100000;
-    const max = 0x1000000;
-    const allNumbers: string[] = new Array(max).fill("");
-    for (let i = 0; i < allNumbers.length; i++) allNumbers[i] = i.toString(16);
-    const numbers = allNumbers.slice(min).filter((n) => {
-        for (let i = 1; i < n.length - 2; i++) if (n[i] >= n[i + 1]) return false;
-        return true;
-    });
+    const sums = [];
+    const expos = [];
+    function addDigit(start: number, end: number, sum: number, digits: number[]){
+        if (digits.length < 9){
+            for (let i = digits.length > 2 ? digits.at(-1)! : 1; i < 16; i++) addDigit(start, end, sum, [...digits, i]);
+        } else {
+            const reduce = digits.reduce((a,b) => a+b);
+            if (reduce == sum) {
+                sums.push(digits.map(n => n.toString(16)).join(""));
+            }
+        }
+    }
+    function addDigitMul(start: number, end: number, exp: number, digits: number[]){
+        if (digits.length < 9){
+            for (let i = digits.length > 2 ? digits.at(-1)! : 1; i < 16; i++) addDigitMul(start, end, exp, [...digits, i]);
+        } else {
+            const reduce = digits.reduce((a,b) => a*b, 1);
+            if (reduce == exp) {
+                expos.push(digits.map(n => n.toString(16)).join(""));
+            }
+        }
+    }
+    for (let i = 0; i < 0xf; i++) {
+        for (let j = 0; j < 0xf; j++) {
+            //addDigit(i, j, i * 16 + j, [i,j]);
+            addDigitMul(i, j, Math.pow(i,j), [i,j]);
+        }
+    }
 
-    //console.log(numbers);
-
-    //const sumNumbers = numbers.filter((n) => Puzzle_SerialNumber.checkSerialNumberSum(n));
-    //const sumNumbersWithOne0 = sumNumbers.filter((n) => n.split("").filter((c) => c == "0").length == 1);
-
-    //const mulNumbers = numbers.filter((n) => Puzzle_SerialNumber.checkSerialNumberMul(n));
-
-    //console.log(sumNumbersWithOne0);
-    //console.log(mulNumbers);
+    console.log(expos);
 });
 
 // part one, one number is scratched off, should add all digits up to the product of first and last digit
