@@ -1,0 +1,29 @@
+You disembark from the magical airborne train, its exterior adorned with faded arcane symbols.
+The doors open with a soft hiss, and you step onto the platform, greeted by a blast of cold air as you step onto the mist-shrouded streets of Ityria.
+The cityscape, dominated by enchanted spires adorned with frost, unfolds before you.
+The hum of arcane energy resonates with the winter chill, creating an enchanting atmosphere in the early morning.
+
+Navigating the ethereal streets, you find yourself in a district less touched by opulence. Modest buildings with worn facades line the lively streets, where vendors peddle their goods and stalls offer a mix of everyday items.
+The soft glow of streetlamps seems feeble, struggling against the pervasive mist that hangs in the air.
+
+The streets are vibrant with life.
+Dwarves haggle over metal tools, tieflings negotiate for fabrics, and gnomes meticulously inspect clockwork gadgets.
+Elves converse in hushed tones about the latest enchantments, their keen senses attuned to the magical energies around them.
+Warforged, with their precise movements, navigate through the crowd, their eyes scanning for intriguing finds.
+
+Arriving at the small artificer shop, "Mystic Gearworks," you find its sign swinging lightly in the breeze, its runes telling tales of countless enchanted contraptions.
+Inside, the workshop is a sanctuary amid the lively atmosphere outside.
+Alaric Forgeheart, the shop's owner, hunches over an intricate workbench cluttered with items, both mundane and magical scraps.
+
+"Morning," he grumbles, his attention returning to the gears and trinkets before him.
+Without much preamble, he directs your attention to a dusty box of arcane components, a mishmash of cogs, gears, and enchanted crystals.
+
+"These arrived a bit... lacking," Alaric mutters, his annoyance evident. "Some of the numbers got scratched off during transport, but the checksum should still be intact. Figure out what's missing. Don't want to send out faulty enchantments."
+
+You carefully examine a gear, and the scratched-off serial number reads 10~7, with the third digit being illegible. Turning to Alaric, you inquire, "What's the checksum?"
+
+Alaric pauses, squinting at the damaged serial number. He grunts, "Alright, here's how it works. Put the first and last digit together, which are 1 and 7 in this case, making it 17. Now, add up all the digits in the serial number, the sum should equal 17. Oh, and remember, all digits are in hex. Got it?"
+
+You nod, absorbing the instructions, thinking to yourself, "For 10~7, the checksum should be 0x17... and 0x1 + 0x0 + 0xe + 0x7 add up to 0x17. So the serial number for that gear must have been 10e7."
+
+Given your input, what is the sum of all the missing digits?
